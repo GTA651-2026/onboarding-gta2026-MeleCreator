@@ -1,0 +1,146 @@
+{
+  "name": "My workflow 5",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi there! 👋\nMy name is Anya. How can I assist you today?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        5.599998474121094
+      ],
+      "id": "23b25223-c3f4-46bc-95b1-cd682e5ed2ea",
+      "name": "When chat message received",
+      "webhookId": "8754f48d-be56-4d34-a11f-33b774f1de25"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "parler français et rester poli"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        16
+      ],
+      "id": "322feda0-8995-4f9f-9718-8cb5f61fccaa",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-6",
+          "cachedResultName": "Claude Sonnet 4.6"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.5,
+      "position": [
+        128,
+        160
+      ],
+      "id": "6f398f44-69f1-44fb-b678-90ba7d6712bc",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        272,
+        224
+      ],
+      "id": "82feb64e-3b3a-4605-a011-386422672a40",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "url": "https://ca.finance.yahoo.com/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        368,
+        224
+      ],
+      "id": "21ff9213-8512-4ead-94a7-95a0bda84585",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e6afb654-9c17-4353-8f2c-57fb6a759bb2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b2c81b22f9e11f5242f3524e88c06f55f70f2fecb5e0060aa24da6f3490c0c2d"
+  },
+  "id": "PfsLB5o1gwD39s0r",
+  "tags": []
+}
