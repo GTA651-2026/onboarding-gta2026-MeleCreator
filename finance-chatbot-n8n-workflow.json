@@ -1,0 +1,172 @@
+{
+  "name": "Finance Chatbot - Yahoo Finance Canada",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "finance-chatbot",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "responseData": "firstEntryJson",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 150]
+    },
+    {
+      "parameters": {
+        "functionCode": "const incoming = items[0].json;\nconst message = incoming.message || '';\nconst symbol = incoming.symbol || 'TSX:RY';\nconst staticData = this.getWorkflowStaticData('node');\nconst lastMessages = staticData.lastMessages || [];\nlastMessages.push({ role: 'user', content: message });\nif (lastMessages.length > 5) {\n  lastMessages.splice(0, lastMessages.length - 5);\n}\nstaticData.lastMessages = lastMessages;\nreturn [{ json: { ...incoming, lastMessages } }];"
+      },
+      "id": "2",
+      "name": "Store Last 5 Messages",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [500, 150]
+    },
+    {
+      "parameters": {
+        "url": "=https://query1.finance.yahoo.com/v7/finance/quote?symbols={{$json[\"symbol\"]}}",
+        "options": {
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "responseFormat": "json",
+        "jsonParameters": false,
+        "queryParametersUi": {
+          "parameter": []
+        }
+      },
+      "id": "3",
+      "name": "Fetch Yahoo Finance",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [750, 150]
+    },
+    {
+      "parameters": {
+        "functionCode": "const incoming = items[0].json;\nconst quote = incoming.quoteResponse?.result?.[0] || {};\nconst lastMessages = incoming.lastMessages || [];\nconst financialData = {\n  symbol: incoming.symbol || 'TSX:RY',\n  name: quote.longName || quote.shortName || incoming.symbol,\n  currency: quote.currency || 'CAD',\n  regularMarketPrice: quote.regularMarketPrice,\n  previousClose: quote.regularMarketPreviousClose,\n  open: quote.regularMarketOpen,\n  dayHigh: quote.regularMarketDayHigh,\n  dayLow: quote.regularMarketDayLow,\n  marketCap: quote.marketCap,\n  fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh,\n  fiftyTwoWeekLow: quote.fiftyTwoWeekLow,\n  trailingPE: quote.trailingPE,\n  forwardPE: quote.forwardPE,\n  marketState: quote.marketState\n};\nconst prompt = `Vous êtes un analyste financier expert du site Yahoo Finance Canada.\n\nRésumé demandé : ${incoming.message || 'Fournir un résumé financier clair pour un analyste.'}\n\nDonnées Yahoo Finance Canada : ${JSON.stringify(financialData, null, 2)}\n\nPrenez en compte les 5 derniers échanges de conversation et fournissez un résumé structuré, objectif et orienté analyste financier.`;\nreturn [{ json: { symbol: incoming.symbol, financialData, lastMessages, prompt } }];"
+      },
+      "id": "4",
+      "name": "Build Prompt",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1000, 150]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "operation": "send",
+        "model": "gpt-3.5-turbo",
+        "additionalFields": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "Tu es un expert en finance spécialisé sur Yahoo Finance Canada. Résume les informations financières pour un analyste financier en faisant ressortir les indicateurs clés, les risques, les points de vigilance et la synthèse exploitable."
+            },
+            {
+              "role": "user",
+              "content": "{{$json[\"prompt\"]}}"
+            }
+          ]
+        }
+      },
+      "id": "5",
+      "name": "ChatGPT",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [1250, 150]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "summary",
+              "value": "={{$json[\"choices\"][0][\"message\"][\"content\"]}}"
+            },
+            {
+              "name": "symbol",
+              "value": "={{$json[\"symbol\"]}}"
+            },
+            {
+              "name": "source",
+              "value": "Yahoo Finance Canada"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{new Date().toISOString()}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6",
+      "name": "Format JSON Output",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [1500, 150]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Store Last 5 Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Last 5 Messages": {
+      "main": [
+        [
+          {
+            "node": "Fetch Yahoo Finance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Yahoo Finance": {
+      "main": [
+        [
+          {
+            "node": "Build Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Prompt": {
+      "main": [
+        [
+          {
+            "node": "ChatGPT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ChatGPT": {
+      "main": [
+        [
+          {
+            "node": "Format JSON Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}
