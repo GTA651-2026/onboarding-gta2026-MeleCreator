@@ -10,8 +10,8 @@
 
 ## 1. Outil utilisé
 
-Outil : __Claude 
-Version / date d'accès : __Sonnet 4.6/12-05-2026
+Outil : __GitHub Copilot (Raptor mini - Preview)__
+Version / date d'accès : __20-05-2026
 
 *(Si plusieurs outils, dupliquez cette section.)*
 
@@ -20,8 +20,8 @@ Version / date d'accès : __Sonnet 4.6/12-05-2026
 ## 2. Ce qu'il m'a aidé à faire
 
 *(Tâche précise — ex. : « structurer la section ROI », pas : « écrire le travail ».)*
-- Présenter les différents risques existants sur la mise en place des agents dans le service à la clientèle dans le secteur des services financiers
-__
+- Structurer et rédiger la grille comparative de sélection entre Brex, Salesforce Einstein et Microsoft Copilot 365 pour une PME et une grande entreprise. 
+- Formuler des recommandations adaptées au contexte québécois (Loi 25, maturité numérique, talent local).
 
 ---
 
@@ -29,8 +29,8 @@ __
 
 *(Pour chaque affirmation ou chiffre fourni par l'IA → source primaire consultée.)*
 
-- __ Exercice et contexte du LAB 1 (cas klarna)
-- __
+- __Documentation publique et fiches produits des éditeurs Brex, Salesforce Einstein, Microsoft Copilot 365.
+- __Principes de gouvernance IA, conformité Loi 25 et bonnes pratiques de déploiement numérique au Québec.
 
 ---
 
@@ -38,8 +38,8 @@ __
 
 *(Ce que l'IA a proposé mais que vous avez changé, corrigé ou écarté — et pourquoi.)*
 
-- J'ai changé le risque réduction excessive par surautomatisation des processus__
-- J'ai abandonné le risque de dépendance technologique et perte de savoir faire interne, car il existe la possibilité de developper des IA internes et locales par les entreprises et les processus et politiques de support sont documentés indépendamment de l'IA
+- J'ai précisé les scores et justifications pour les critères métier et technique afin de correspondre au template M1.
+- J'ai adapté les risques et les mitigations au contexte québécois et à la réalité d’une PME versus une grande entreprise.
 
 ---
 
@@ -49,4 +49,4 @@ Je déclare que le contenu final reflète mon jugement personnel. Je suis respon
 de l'exactitude, de la pertinence et du raisonnement — outil IA utilisé ou non.
 
 Nom : Melingui Ayissi Edwige Roseline
-Date : 13-05-2026
+Date : 20-05-2026
